@@ -6,9 +6,9 @@ package attrmapper_test
 import (
 	"testing"
 
+	"github.com/Apoorva64/terraform-plugin-codegen-openapi/internal/explorer"
+	"github.com/Apoorva64/terraform-plugin-codegen-openapi/internal/mapper/attrmapper"
 	"github.com/google/go-cmp/cmp"
-	"github.com/hashicorp/terraform-plugin-codegen-openapi/internal/explorer"
-	"github.com/hashicorp/terraform-plugin-codegen-openapi/internal/mapper/attrmapper"
 	"github.com/hashicorp/terraform-plugin-codegen-spec/datasource"
 	"github.com/hashicorp/terraform-plugin-codegen-spec/resource"
 	"github.com/hashicorp/terraform-plugin-codegen-spec/schema"
@@ -526,7 +526,8 @@ func TestResourceListNestedAttribute_ApplyNestedOverride(t *testing.T) {
 			},
 			overridePath: []string{"nested_attribute", "double_nested_attribute"},
 			override: explorer.Override{
-				Description: "new description",
+				Description:              "new description",
+				ComputedOptionalRequired: string(schema.Optional),
 			},
 			expectedAttribute: &attrmapper.ResourceListNestedAttribute{
 				Name: "attribute",
@@ -539,7 +540,7 @@ func TestResourceListNestedAttribute_ApplyNestedOverride(t *testing.T) {
 									&attrmapper.ResourceStringAttribute{
 										Name: "double_nested_attribute",
 										StringAttribute: resource.StringAttribute{
-											ComputedOptionalRequired: schema.Required,
+											ComputedOptionalRequired: schema.Optional,
 											Description:              pointer("new description"),
 										},
 									},

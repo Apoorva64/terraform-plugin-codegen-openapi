@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/hashicorp/terraform-plugin-codegen-openapi/internal/explorer"
-	"github.com/hashicorp/terraform-plugin-codegen-openapi/internal/mapper/attrmapper"
+	"github.com/Apoorva64/terraform-plugin-codegen-openapi/internal/explorer"
+	"github.com/Apoorva64/terraform-plugin-codegen-openapi/internal/mapper/attrmapper"
 	"github.com/hashicorp/terraform-plugin-codegen-spec/resource"
 	"github.com/hashicorp/terraform-plugin-codegen-spec/schema"
 )
@@ -278,6 +278,102 @@ func TestResourceAttributes_ApplyOverrides(t *testing.T) {
 					Float64Attribute: resource.Float64Attribute{
 						ComputedOptionalRequired: schema.Required,
 						Description:              pointer("new float64 description"),
+					},
+				},
+			},
+		},
+		"matching overrides computed": {
+			overrides: map[string]explorer.Override{
+				"string_attribute": {
+					ComputedOptionalRequired: "computed",
+				},
+			},
+			attributes: attrmapper.ResourceAttributes{
+				&attrmapper.ResourceStringAttribute{
+					Name: "string_attribute",
+					StringAttribute: resource.StringAttribute{
+						ComputedOptionalRequired: schema.Required,
+					},
+				},
+			},
+			expectedAttributes: attrmapper.ResourceAttributes{
+				&attrmapper.ResourceStringAttribute{
+					Name: "string_attribute",
+					StringAttribute: resource.StringAttribute{
+						ComputedOptionalRequired: schema.Computed,
+						Description:              pointer(""),
+					},
+				},
+			},
+		},
+		"matching overrides optional": {
+			overrides: map[string]explorer.Override{
+				"string_attribute": {
+					ComputedOptionalRequired: "optional",
+				},
+			},
+			attributes: attrmapper.ResourceAttributes{
+				&attrmapper.ResourceStringAttribute{
+					Name: "string_attribute",
+					StringAttribute: resource.StringAttribute{
+						ComputedOptionalRequired: schema.Required,
+					},
+				},
+			},
+			expectedAttributes: attrmapper.ResourceAttributes{
+				&attrmapper.ResourceStringAttribute{
+					Name: "string_attribute",
+					StringAttribute: resource.StringAttribute{
+						ComputedOptionalRequired: schema.Optional,
+						Description:              pointer(""),
+					},
+				},
+			},
+		},
+		"matching overrides required": {
+			overrides: map[string]explorer.Override{
+				"string_attribute": {
+					ComputedOptionalRequired: "required",
+				},
+			},
+			attributes: attrmapper.ResourceAttributes{
+				&attrmapper.ResourceStringAttribute{
+					Name: "string_attribute",
+					StringAttribute: resource.StringAttribute{
+						ComputedOptionalRequired: schema.Computed,
+					},
+				},
+			},
+			expectedAttributes: attrmapper.ResourceAttributes{
+				&attrmapper.ResourceStringAttribute{
+					Name: "string_attribute",
+					StringAttribute: resource.StringAttribute{
+						ComputedOptionalRequired: schema.Required,
+						Description:              pointer(""),
+					},
+				},
+			},
+		},
+		"matching overrides computed_optional": {
+			overrides: map[string]explorer.Override{
+				"string_attribute": {
+					ComputedOptionalRequired: "computed_optional",
+				},
+			},
+			attributes: attrmapper.ResourceAttributes{
+				&attrmapper.ResourceStringAttribute{
+					Name: "string_attribute",
+					StringAttribute: resource.StringAttribute{
+						ComputedOptionalRequired: schema.Computed,
+					},
+				},
+			},
+			expectedAttributes: attrmapper.ResourceAttributes{
+				&attrmapper.ResourceStringAttribute{
+					Name: "string_attribute",
+					StringAttribute: resource.StringAttribute{
+						ComputedOptionalRequired: schema.ComputedOptional,
+						Description:              pointer(""),
 					},
 				},
 			},

@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
-	"github.com/hashicorp/terraform-plugin-codegen-openapi/internal/explorer"
-	"github.com/hashicorp/terraform-plugin-codegen-openapi/internal/mapper/attrmapper"
+	"github.com/Apoorva64/terraform-plugin-codegen-openapi/internal/explorer"
+	"github.com/Apoorva64/terraform-plugin-codegen-openapi/internal/mapper/attrmapper"
 	"github.com/hashicorp/terraform-plugin-codegen-spec/datasource"
 	"github.com/hashicorp/terraform-plugin-codegen-spec/schema"
 )
@@ -243,10 +243,16 @@ func TestDataSourceAttributes_ApplyOverrides(t *testing.T) {
 		"matching overrides": {
 			overrides: map[string]explorer.Override{
 				"string_attribute": {
-					Description: "new string description",
+					Description:              "new string description",
+					ComputedOptionalRequired: "optional",
 				},
 				"float64_attribute": {
-					Description: "new float64 description",
+					Description:              "new float64 description",
+					ComputedOptionalRequired: "required",
+				},
+				"computed_optional_attribute": {
+					Description:              "new computed_optional",
+					ComputedOptionalRequired: "computed_optional",
 				},
 			},
 			attributes: attrmapper.DataSourceAttributes{
@@ -264,12 +270,19 @@ func TestDataSourceAttributes_ApplyOverrides(t *testing.T) {
 						Description:              pointer("old description"),
 					},
 				},
+				&attrmapper.DataSourceStringAttribute{
+					Name: "computed_optional_attribute",
+					StringAttribute: datasource.StringAttribute{
+						ComputedOptionalRequired: schema.Required,
+						Description:              pointer("old description"),
+					},
+				},
 			},
 			expectedAttributes: attrmapper.DataSourceAttributes{
 				&attrmapper.DataSourceStringAttribute{
 					Name: "string_attribute",
 					StringAttribute: datasource.StringAttribute{
-						ComputedOptionalRequired: schema.Required,
+						ComputedOptionalRequired: schema.Optional,
 						Description:              pointer("new string description"),
 					},
 				},
@@ -278,6 +291,13 @@ func TestDataSourceAttributes_ApplyOverrides(t *testing.T) {
 					Float64Attribute: datasource.Float64Attribute{
 						ComputedOptionalRequired: schema.Required,
 						Description:              pointer("new float64 description"),
+					},
+				},
+				&attrmapper.DataSourceStringAttribute{
+					Name: "computed_optional_attribute",
+					StringAttribute: datasource.StringAttribute{
+						ComputedOptionalRequired: schema.ComputedOptional,
+						Description:              pointer("new computed_optional"),
 					},
 				},
 			},

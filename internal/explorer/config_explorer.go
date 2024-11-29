@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/terraform-plugin-codegen-openapi/internal/config"
+	"github.com/Apoorva64/terraform-plugin-codegen-openapi/internal/config"
 
 	highbase "github.com/pb33f/libopenapi/datamodel/high/base"
 	high "github.com/pb33f/libopenapi/datamodel/high/v3"
@@ -211,7 +211,10 @@ func extractSchemaOptions(cfgSchemaOpts config.SchemaOptions) SchemaOptions {
 func extractOverrides(cfgOverrides map[string]config.Override) map[string]Override {
 	overrides := make(map[string]Override, len(cfgOverrides))
 	for key, cfgOverride := range cfgOverrides {
-		overrides[key] = Override{Description: cfgOverride.Description}
+		overrides[key] = Override{
+			Description:              cfgOverride.Description,
+			ComputedOptionalRequired: cfgOverride.ComputedOptionalRequired,
+		}
 	}
 
 	return overrides
